@@ -29,10 +29,11 @@ public class MapGenerator {
                     g.setColor(Color.black);
                     g.drawRect(j * brickWidth + 80, i * brickHeight + 50, brickWidth, brickHeight);
                 }
-
             }
         }
-
     }
 
+    public void setBrickValue(int value, int row, int col){
+        map[row][col] = value;
+    }
 }
