@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.Timer;
 
 public class GamePlay extends JPanel implements KeyListener, ActionListener {
     private boolean play = false;
@@ -23,7 +24,10 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
     private int ballxdir = -1;
     private int ballydir = -2;
 
+    private MapGenerator map;
+
     public GamePlay() {
+        map = new MapGenerator(3, 7);
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -35,6 +39,8 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         g.setColor(Color.black);
         g.fillRect(1,1, 692, 592);
 
+        map.draw((Graphics2D)g);
+
         g.setColor(Color.yellow);
         g.fillRect(0, 0, 3, 592);
         g.fillRect(0, 0, 692, 3);
@@ -44,7 +50,9 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         g.fillRect(playerX, 550, 100, 8);
 
         g.setColor(Color.yellow);
-        g.fillRect(playerX,  ballposY, 20, 20);
+        g.fillOval(ballposX,  ballposY, 20, 20);
+
+        g.dispose();
 
     }
 
@@ -68,20 +76,40 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         }
     }
 
-    private void moveLeft() {
-        play = true;
-        playerX = 20;
-    }
 
     private void moveRight() {
+        play = true;
+        playerX += 20;
+    }
+
+    private void moveLeft() {
         play = true;
         playerX -= 20;
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
+        timer.start();
+        if (play){
+            if (new Rectangle(ballposX, ballposY, 20, 20).
+                    intersects(new Rectangle(playerX, 550, 100, 8))) {
+                ballydir = -ballydir;
+            }
 
+            ballposX += ballxdir;
+            ballposY += ballydir;
+            if (ballposX <0) {
+                ballxdir = -ballxdir;
+            }
+            if (ballposY <0) {
+                ballydir = -ballydir;
+            }
+            if (ballposX < 670) {
+                ballxdir = -ballxdir;
+            }
+
+        }
+        repaint();
     }
 
     @Override
